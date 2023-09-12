@@ -4,11 +4,16 @@ import { redirect } from "next/navigation";
 import ThreadCard from "@/components/cards/ThreadCard";
 import { fetchUser } from "@/lib/actions/user.actions";
 import { fetchThreadById } from "@/lib/actions/thread.actions";
+import Comment from "@/components/forms/Comment";
 
 const Page = async ({params} : {params: { id: string}}) => {
     if(!params.id) return null;
 
     const user = await currentUser();
+    
+    // TODO: sync photo on Clerk and profile-photo on Uploadthing
+    //console.log(user)
+    
     if(!user) return null;
 
     const userInfo = await fetchUser(user.id);
@@ -30,6 +35,31 @@ const Page = async ({params} : {params: { id: string}}) => {
                 createdAt={thread.createdAt}
                 comments={thread.children}
             />
+            </div>
+
+            <div className="mt-7">
+                <Comment 
+                    threadId={thread._id}
+                    currentUserImage={userInfo.image}
+                    currentUserId={JSON.stringify(userInfo._id)}
+                />
+            </div>
+
+            <div className="mt-10">
+                {thread.children.map((childItem: any) => (
+                    <ThreadCard 
+                    key={childItem._id}
+                    id={childItem._id}
+                    currentUserId={user?.id || ""}
+                    parentId={childItem.parentId}
+                    content={childItem.text}
+                    author = {childItem.author}
+                    community={childItem.community}
+                    createdAt={childItem.createdAt}
+                    comments={childItem.children}
+                    isComment
+                />
+                ))}
             </div>
         </section>
     )
