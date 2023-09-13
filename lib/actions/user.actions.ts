@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 
 import {connectToDB} from '../mongoose'
 import User from '../models/user.model'
+import Thread from '../models/thread.model'
 
 interface Params {
     userId: string;
@@ -59,3 +60,48 @@ export async function fetchUser(userId: String) {
         throw new Error(`Failed to fetch user: ${error.message}`);
     }
 }
+
+export async function fetchUserPost(userId: string) {
+    try {
+        connectToDB();
+
+        // Find all threads author by user with the give userId
+
+        // TODO: Populate community
+
+        const threads = await User.findOne({id: userId})
+            .populate({
+                path: 'threads',
+                model: Thread,
+                populate: {
+                    path: 'children',
+                    model: Thread,
+                    populate: {
+                        path: 'author',
+                        model: User,
+                        select: 'name image id'
+                    }
+                }
+            });
+
+        return threads;
+    } catch (error: any) {
+        throw new Error(`Can not fetch user post: ${error.message}`)
+    }
+}
+
+// export async function cleanupUserThreads() {
+//     try {
+//         connectToDB();
+
+//         const allThreads = await Thread.find({}, '_id').exec();
+//         const allThreadsId = allThreads.map((thread: any) => thread._id);
+
+//         const user = await User.findOne({}).exec();
+//         user.threads = user.threads.filter((threadId : any) => allThreadsId.includes(threadId))
+//         await user.save();
+
+//     } catch (error: any) {
+//         throw new Error(`Fail to cleanup User threads: ${error.message}`)
+//     }
+// }
