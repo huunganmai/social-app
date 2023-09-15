@@ -7,18 +7,19 @@ import { fetchUser } from "@/lib/actions/user.actions";
 async function Page() {
     const user = await currentUser();
     if(!user) return null;
+    console.log(user)
     
     const userInfo = await fetchUser(user?.id);
-    if(userInfo.onboarded) redirect('/')
+    if(userInfo?.onboarded) redirect('/')
 
     const userData = {
         id: user?.id,
         objectId: userInfo?._id,
-        username: userInfo?.username || user?.username,
-        name: userInfo?.name || user?.firstName || "",
-        bio: userInfo?.bio || "",
-        image: userInfo.image || user?.imageUrl,
-    }
+        username: userInfo ? userInfo?.username : user.username,
+        name: userInfo ? userInfo?.name : user.firstName ?? "",
+        bio: userInfo ? userInfo?.bio : "",
+        image: userInfo ? userInfo?.image : user?.imageUrl,
+    };
 
     return (
         <main className="mx-auto flex max-w-3xl flex-col justify-start px-10 py-20">

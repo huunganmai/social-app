@@ -12,7 +12,7 @@ export default async function Home() {
     <>
       <h1 className="head-text">Home</h1>
 
-      <section>
+      <section className="flex flex-col mt-9 gap-10">
         {result.posts.map((post) => (
           <ThreadCard 
             key={post._id}
