@@ -2,10 +2,6 @@ import { currentUser } from "@clerk/nextjs";
 import {redirect} from 'next/navigation'
 
 import { fetchUser, fetchUsers } from "@/lib/actions/user.actions";
-import ProfileHeader from "@/components/shared/ProfileHeader";
-import { profileTabs } from "@/constants";
-import Image from "next/image";
-import ThreadsTab from "@/components/shared/ThreadsTab";
 import UserCard from "@/components/cards/UserCard";
 
 const Page = async () => {
@@ -14,8 +10,6 @@ const Page = async () => {
 
     const userInfo = await fetchUser(user.id);
     if(!userInfo.onboarded) redirect('/onboarding');
-    console.log(user.id)
-    console.log(userInfo.id)
 
     // Fetch user
     const result = await fetchUsers({

@@ -1,5 +1,10 @@
+
+
 import Image from "next/image";
 import Link from "next/link";
+
+import { Button } from "../ui/button";
+import OptionButton from "../button/OptionButton";
 
 interface Props {
     id: string;
@@ -37,7 +42,7 @@ const ThreadCard = ({
     isComment
 }: Props) => {
     return (
-        <article className={`flex w-full flex-col rounded-xl ${isComment ? 'px-0 xs:px-7' : 'bg-dark-2 p-7'}`}>
+        <article className={`flex w-full flex-col bg-white rounded-xl ${isComment ? 'px-0 xs:px-7' : 'p-7'}`}>
             <div className="flex items-start justify-between">
                 <div className="flex w-full flex-1 flex-row gap-4">
                     <div className="flex flex-col items-center">
@@ -52,28 +57,39 @@ const ThreadCard = ({
                         <div className="thread-card_bar"/>
                     </div>
                     <div className="flex flex-col w-full">
-                        <Link href={`/profile/${author.id}`} className="w-fit">
-                            <h4 className="cursor-pointer text-light-2">{author.name}</h4>
-                        </Link>
+                        <div className="relative flex flex-row justify-between">
+                            <Link href={`/profile/${author.id}`} className="w-fit">
+                                <h4 className="cursor-pointer">{author.name}</h4>
+                            </Link>
+                            <OptionButton threadId={id}/>
+                        </div>
 
-                        <p className="mt-2 text-small-regular text-light-2">{content}</p>
+                        <p className="mt-2 text-small-regular">{content}</p>
 
                         <div className={`${isComment && 'mb-10'} mt-5 flex flex-col gap-3`}>
-                            <div className="flex gap-3">
-                                <Image src={"/assets/heart-gray.svg"} alt="heart" width={24} 
-                                height={24} className="cursor-pointer object-contain"
-                                />
-                                <Link href={`/thread/${id}`}>
-                                    <Image src={"/assets/reply.svg"} alt="reply" width={24} 
+                            <div className="flex py-2 border-y border-y-gray-2">
+                                <div className="flex flex-1 justify-center hover:bg-gray-2 rounded-xl custom-hover">
+                                    <Image src={"/assets/heart-gray.svg"} alt="heart" width={24} 
                                     height={24} className="cursor-pointer object-contain"
                                     />
-                                </Link>
-                                <Image src={"/assets/repost.svg"} alt="repost" width={24} 
-                                height={24} className="cursor-pointer object-contain"
-                                />
-                                <Image src={"/assets/share.svg"} alt="share" width={24} 
-                                height={24} className="cursor-pointer object-contain"
-                                />
+                                </div>
+                                <div className="flex justify-center flex-1 hover:bg-gray-2 rounded-xl custom-hover">
+                                    <Link href={`/thread/${id}`} className="flex flex-1 justify-center">
+                                        <Image src={"/assets/reply.svg"} alt="reply" width={24} 
+                                        height={24} className="cursor-pointer object-contain"
+                                        />                                       
+                                    </Link>
+                                </div>
+                                <div className="flex justify-center flex-1 hover:bg-gray-2 rounded-xl custom-hover">
+                                    <Image src={"/assets/repost.svg"} alt="repost" width={24} 
+                                    height={24} className="cursor-pointer object-contain"
+                                    />
+                                </div>
+                                <div className="flex justify-center flex-1 hover:bg-gray-2 rounded-xl custom-hover">
+                                    <Image src={"/assets/share.svg"} alt="share" width={24} 
+                                    height={24} className="cursor-pointer object-contain"
+                                    />
+                                </div>
                             </div>
 
                             {isComment && comments.length > 0 && (

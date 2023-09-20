@@ -22,7 +22,7 @@ function LeftSidebar() {
                         <Link
                             href={link.route}
                             key={link.label}
-                            className={`leftsidebar_link hover:bg-primary-500 transition duration-150 delay-50 ${isActive && 'bg-primary-500'}`}
+                            className={`leftsidebar_link custom-hover-2 ${isActive && 'bg-primary-500'}`}
                         >
                             <Image 
                                 src={link.imgURL}
@@ -31,11 +31,11 @@ function LeftSidebar() {
                                 width={24}
                             />
 
-                            <p className='text-light-1 max-lg:hidden'>{link.label}</p>
+                            <p className='text-black max-lg:hidden'>{link.label}</p>
                         </Link>)
                 })}
             </div>
-            <div className='mt-10 px-6'>
+            <div className='mt-10 pt-5 px-6 border-t border-t-gray-2'>
                 <SignedIn>
                     <SignOutButton signOutCallback={() => route.push('/sign-in')}>
                         <div className="flex cursor-pointer gap-4">
@@ -46,7 +46,7 @@ function LeftSidebar() {
                                 width={24}
                             />
 
-                            <p className='text-light-2 max-lg-hidden'>Logout</p>
+                            <p className='max-lg-hidden'>Logout</p>
                         </div>
                     </SignOutButton>
                 </SignedIn>

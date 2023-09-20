@@ -12,19 +12,22 @@ export default async function Home() {
     <>
       <h1 className="head-text">Home</h1>
 
-      <section className="flex flex-col mt-9 gap-10">
+      <section className="flex flex-col mt-9 gap-4">
         {result.posts.map((post) => (
-          <ThreadCard 
-            key={post._id}
-            id={post._id}
-            currentUserId={user?.id || ""}
-            parentId={post.parentId}
-            content={post.text}
-            author = {post.author}
-            community={post.community}
-            createdAt={post.createdAt}
-            comments={post.children}
-          />
+          <div className="flex flex-col">
+              <ThreadCard 
+                key={post._id}
+                id={post._id}
+                currentUserId={user?.id || ""}
+                parentId={post.parentId}
+                content={post.text}
+                author = {post.author}
+                community={post.community}
+                createdAt={post.createdAt}
+                comments={post.children}
+              />
+          </div>
+          
         ))}
       </section>
     </>

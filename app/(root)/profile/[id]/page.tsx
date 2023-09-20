@@ -16,7 +16,7 @@ const Page = async ({ params }: {params: {id: string}}) => {
     if(!userInfo?.onboarded) redirect('/onboarding')
      
     return (
-        <section className="text-light-2">
+        <section className="">
             <ProfileHeader 
                 accountId={userInfo.id}
                 authUserId={user.id}
@@ -41,13 +41,13 @@ const Page = async ({ params }: {params: {id: string}}) => {
                                 <p className="max-sm:hidden">{tab.label}</p>
 
                                 {tab.label === "Threads" && (
-                                    <p className="ml-1 rounded-sm bg-light-4 px-2  py-1">{userInfo?.threads.length}</p>
+                                    <p className="ml-1 rounded-sm px-2  py-1">{userInfo?.threads.length}</p>
                                 )}
                             </TabsTrigger>
                         ))}
                     </TabsList>
                     {profileTabs.map((tab) => (
-                        <TabsContent key={`content-${tab.label}`} value={tab.value} className="w-full text-light-1">
+                        <TabsContent key={`content-${tab.label}`} value={tab.value} className="w-full">
                             <ThreadsTab
                                 currentUserId={user.id}
                                 accountId={userInfo.id}

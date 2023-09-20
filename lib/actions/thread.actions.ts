@@ -140,3 +140,30 @@ export async function addCommentToThread(
         throw new Error(`Error adding comment to thread: ${error.message}`)
     }
 }
+
+export async function deleteThread(threadId: string) {
+    try{
+        connectToDB();
+
+        const deletedThread = await Thread.findOneAndDelete({ _id: threadId}).exec();
+        
+        // Delete childrenID in parent thread
+        const deletedInParent = await Thread.updateOne(
+            {_id: deletedThread.parentId},
+            {$pull: {children: deletedThread._id}}
+        )
+        console.log(`deletedInParent: ${deletedInParent}`)
+
+        if(deletedInParent.modifiedCount === 1 ) {console.log("Deleted completed")}
+        else console.log("Fail to deleted")
+
+        // TODO: Delete children comment
+        const deletedChildren = await Thread.deleteMany({parentId: deletedThread._id});
+        console.log(`deletedChildren: ${deletedChildren}`)
+        
+    } catch (error: any) {
+        throw new Error(`Fail to Delete thread: ${error.message}`)
+    }
+}
+
+// TODO: Soft Deleted

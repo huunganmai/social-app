@@ -10,7 +10,7 @@ function Topbar() {
         <nav className="topbar">
             <Link href={"/"} className="flex items-center gap-4">
                 <Image src={"/assets/logo.svg"} alt="logo" width={28} height={28}/>
-                <p className="text-heading3-bold text-light-1 max-xs:hidden">Threads</p>
+                <p className="text-heading3-bold max-xs:hidden">Threads</p>
             </Link>
 
             <div className="flex items-center gap-1">
@@ -31,7 +31,6 @@ function Topbar() {
                 
                 <OrganizationSwitcher 
                     appearance={{
-                        baseTheme: dark,
                         elements: {
                             organizationSwitcherTrigger: "px-2 py-4",
                         },
