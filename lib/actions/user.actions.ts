@@ -6,6 +6,7 @@ import {connectToDB} from '../mongoose'
 import User from '../models/user.model'
 import Thread from '../models/thread.model'
 import { SortOrder, FilterQuery } from 'mongoose';
+import { currentUser } from '@clerk/nextjs';
 
 interface Params {
     userId: string;
@@ -14,6 +15,13 @@ interface Params {
     bio: string;
     image: string;
     path: string;
+}
+
+export async function getUser() {
+    const user = await currentUser();
+    const res = await user;
+    // console.log('get user '+ JSON.stringify(user));
+    return res;
 }
 
 export async function updateUser({
@@ -171,20 +179,3 @@ export async function getActivity(userId: string) {
 
 
 
-
-
-// export async function cleanupUserThreads() {
-//     try {
-//         connectToDB();
-
-//         const allThreads = await Thread.find({}, '_id').exec();
-//         const allThreadsId = allThreads.map((thread: any) => thread._id);
-
-//         const user = await User.findOne({}).exec();
-//         user.threads = user.threads.filter((threadId : any) => allThreadsId.includes(threadId))
-//         await user.save();
-
-//     } catch (error: any) {
-//         throw new Error(`Fail to cleanup User threads: ${error.message}`)
-//     }
-// }

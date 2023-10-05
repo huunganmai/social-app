@@ -146,24 +146,110 @@ export async function deleteThread(threadId: string) {
         connectToDB();
 
         const deletedThread = await Thread.findOneAndDelete({ _id: threadId}).exec();
-        
+
         // Delete childrenID in parent thread
-        const deletedInParent = await Thread.updateOne(
-            {_id: deletedThread.parentId},
-            {$pull: {children: deletedThread._id}}
-        )
-        console.log(`deletedInParent: ${deletedInParent}`)
+        const deletedInParent = await User.updateOne(
+            {_id: deletedThread.author},
+            {$pull:  {threads : deletedThread._id }}
+        ).exec();
 
-        if(deletedInParent.modifiedCount === 1 ) {console.log("Deleted completed")}
-        else console.log("Fail to deleted")
+        if(deletedInParent.modifiedCount === 1 ) {
+            console.log("Deleted completed")
+        } else {
+            console.log("Fail to deleted")
+        }
 
-        // TODO: Delete children comment
-        const deletedChildren = await Thread.deleteMany({parentId: deletedThread._id});
-        console.log(`deletedChildren: ${deletedChildren}`)
-        
+        //Delete children comment
+        const deletedChildren = await Thread.deleteMany({parentId: deletedThread._id}).exec();        
     } catch (error: any) {
         throw new Error(`Fail to Delete thread: ${error.message}`)
     }
 }
 
+export async function reactionThread(threadId: string, userId: string, action: string) {
+    try {
+        connectToDB();
+
+        const thread = await Thread.findById(threadId).exec();
+        if(!thread) throw new Error("Thread not found")
+        
+        const user = await User.findById(userId).exec();
+        console.log("user._id  "  +user._id)
+
+        switch(action) {
+            case 'like':
+                if(!thread.likes.includes(user._id)) {
+                    thread.likes.push(user._id)
+                }
+    
+                const dislikeIndex = thread.dislikes.indexOf(user._id);
+                if(dislikeIndex > -1) {
+                    thread.dislikes.splice(dislikeIndex, 1)
+                }
+                break;
+
+            case 'dislike':
+                if(!thread.dislikes.includes(user._id)) {
+                    thread.dislikes.push(user._id);
+                }
+    
+                const likeIndex = thread.likes.indexOf(user._id)
+                if(likeIndex > -1) {
+                    thread.likes.splice(likeIndex, 1)
+                }
+                break;
+
+            case 'removeLike':
+                const likeIndexToRemove = thread.likes.indexOf(user._id)
+                if(likeIndexToRemove > -1) {
+                    thread.likes.splice(likeIndexToRemove, 1)
+                }
+                break;
+
+            case 'removeDislike':
+                const dislikeIndexToRemove = thread.dislikes.indexOf(user._id)
+                if(dislikeIndexToRemove > -1) {
+                    thread.dislikes.splice(dislikeIndexToRemove, 1)
+                    // await Thread.updateOne(
+                    //     {_id: threadId},
+                    //     {
+                    //         $pull: {
+                    //             likes: user._id
+                    //         }
+                    //     }  
+                    // )
+                }
+                break;
+
+            default:
+                throw new Error('Invalid action');
+        }
+
+        thread.save();
+
+    } catch(error: any) {
+        throw new Error(`Can not react thread: ${error.message}`)
+    }
+
+}
+
 // TODO: Soft Deleted
+
+export async function addLikeDislike() {
+    try {
+        connectToDB();
+        const result = await Thread.updateMany(
+            {},
+            {
+                $set: {
+                likes: [],
+                dislikes: [],
+                }
+            }
+        )
+
+        console.log("Thread modified" + result.modifiedCount);
+    } catch (error: any) {
+        throw new Error(`Can not addLike Dislike ${error.message}`)
+    }
+}
